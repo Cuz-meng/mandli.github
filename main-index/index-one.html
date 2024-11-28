@@ -1,230 +1,343 @@
 <!DOCTYPE html>
+
 <html>
 
 <head>
-  <meta charset="UTF-8" />
-  <title>杂货店</title>
-  <style>
-    /* 全局样式重置 */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      margin: 0 auto;
-    }
+    <meta charset="UTF-8" />
+    <title>杂货店</title>
+    <style>
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            margin: 0 auto;
+        }
 
-    body {
-      font: 14px / 1.5 Helvetica Neue, Helvetica, Arial, Microsoft Yahei, Hiragino Sans GB, Heiti SC, WenQuanYi Micro Hei, sans-serif;
-      color: #333;
-      background-color: #fff;
-      min-width: 1226px;
-      max-width: 1226px;
-    }
+        body {
+            font: 14px / 1.5 Helvetica Neue, Helvetica, Arial, Microsoft Yahei, Hiragino Sans GB, Heiti SC, WenQuanYi Micro Hei, sans-serif;
+            color: #333;
+            background-color: #fff;
+            min-width: 1226px;
+            max-width: 1226px;
+        }
 
-    /* 头部导航栏样式 */
-    header {
+        /* 头部导航栏样式 */
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            width: 100%;
+        }
 
-      background-color: #333;
-      color: white;
-      padding: 10px 0;
-      width: 100%;
-    }
+        header nav {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
 
-    header nav {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-    }
+        header nav a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
 
-    header nav a {
-      color: white;
-      text-decoration: none;
-      transition: color 0.3s ease;
-    }
+        header nav a:hover {
+            color: #ddd;
+        }
 
-    header nav a:hover {
-      color: #ddd;
-    }
+        /* 主体内容区域样式 */
+      .main-content {
+            padding: 20px;
+        }
 
-    /* 主体内容区域样式 */
-    .main-content {
-      padding: 20px;
-    }
+        /* 商品分类栏样式 */
+      .category-bar {
+            background-color: #f5f5f5;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
 
-    /* 商品分类栏样式 */
-    .category-bar {
-      background-color: #f5f5f5;
-      padding: 10px;
-      margin-bottom: 20px;
-    }
+      .category-bar ul {
+            list-style-type: none;
+            display: flex;
+            justify-content: space-around;
+        }
 
-    .category-bar ul {
-      list-style-type: none;
-      display: flex;
-      justify-content: space-around;
-    }
+      .category-bar ul li a {
+            text-decoration: none;
+            color: #333;
+            transition: color 0.3s ease;
+        }
 
-    .category-bar ul li a {
-      text-decoration: none;
-      color: #333;
-      transition: color 0.3s ease;
-    }
+      .category-bar ul li a:hover {
+            color: #666;
+        }
 
-    .category-bar ul li a:hover {
-      color: #666;
-    }
+        /* 左右切换按钮样式 */
+      .switch-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-top: 10px;
+        }
 
-    /* 商品展示区域样式 */
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      /* 设置为4列，每列宽度相等 */
-      grid-gap: 20px;
-    }
+      .switch-buttons button {
+            background-color: #e0e0e0;
+            color: #333;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-    .product-item {
-      border: 1px solid #ddd;
-      padding: 10px;
-      text-align: center;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s ease;
-    }
+      .switch-buttons button:hover {
+            background-color: #d0d0d0;
+        }
 
-    .product-item:hover {
-      transform: translateY(-5px);
-    }
+        /* 商品展示区域样式（修改此处） */
+      .product-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            grid-gap: 20px;
+        }
 
-    .product-img {
-      width: 150px;
-      height: 150px;
-      margin: 0 auto 10px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+      .product-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
 
-    .product-img img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: cover;
-    }
+      .product-item:hover {
+            transform: translateY(-5px);
+        }
 
-    .product-title {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 5px;
-    }
+      .product-img {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-    .product-price {
-      color: #ff6347;
-      font-size: 14px;
-    }
+      .product-img img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
 
-    /* 底部 */
-    footer {
-      background-color: #333;
-      color: white;
-      text-align: center;
-      padding: 10px 0;
-    }
+      .product-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
 
-    .fancy-link {
-      display: inline-block;
-      padding: 10px 20px;
-      background: linear-gradient(45deg, #2196F3, #21CBF3);
-      color: white;
-      text-decoration: none;
-      border-radius: 25px;
-      font-family: system-ui, -apple-system, sans-serif;
-      font-weight: 500;
-      box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
-      transition: all 0.3s ease;
-    }
+      .product-price {
+            color: #ff6347;
+            font-size: 14px;
+        }
 
-    .fancy-link:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
-    }
-  </style>
+        /* 底部 */
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+      .fancy-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(45deg, #2196F3, #21CBF3);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-family: system-ui, -apple-system, sans-serif;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+            transition: all 0.3s ease;
+        }
+
+      .fancy-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+        }
+    </style>
 </head>
 
 <body>
-  <!-- 头部导航栏 -->
-  <header>
-    <nav>
-      <a href="#">首页</a>
-      <a href="#">商品分类</a>
-      <a href="#">购物车</a>
-      <a href="#">我的订单</a>
-      <a href="../index.html" class="fancy-link">登录/注册</a>
+    <!-- 头部导航栏 -->
+    <header>
+        <nav>
+            <a href="#">首页</a>
+            <a href="#">商品分类</a>
+            <a href="#">购物车</a>
+            <a href="#">我的订单</a>
+            <a href="../index.html" class="fancy-link">登录/注册</a>
+        </nav>
+    </header>
 
-    </nav>
-  </header>
+    <!-- 主体内容区域 -->
+    <div class="main-content">
+        <!-- 商品分类栏 -->
+        <div class="category-bar">
+            <ul>
+                <li><a href="#" data-category="recommended">推荐商品</a></li>
+                <li><a href="#" data-category="fruits-vegetables">果蔬生鲜</a></li>
+                <li><a href="#" data-category="daily-goods">日用百货</a></li>
+                <li><a href="#" data-category="electronics">数码电器</a></li>
+        </div>
+        </ul>
+        <!-- 商品展示区域 -->
+        <div class="product-grid" id="product-grid">
+            <!-- 初始展示推荐商品 -->
+            <div class="product-item" data-category="recommended">
+                <div class="product-img"><img src="res/image1.png" alt="商品1"></div>
+                <div class="product-title">保温杯</div>
+                <div class="product-price">￥35.00</div>
+            </div>
+            <div class="product-item" data-category="recommended">
+                <div class="product-img"><img src="res/image2.png" alt="商品2"></div>
+                <div class="product-title">苹果</div>
+                <div class="product-price">￥5.00</div>
+            </div>
+            <div class="product-item" data-category="recommended">
+                <div class="product-img">
+                    <img src="res/image3.png" alt="商品3">
+                </div>
+                <div class="product-title">毛巾</div>
+                <div class="product-price">￥10.00</div>
+            </div>
+            <div class="product-item" data-category="recommended">
+                <div class="product-img">
+                    <img src="res/image4.png" alt="商品4">
+                </div>
+                <div class="product-title">牙膏</div>
+                <div class="product-price">￥12.00</div>
+            </div>
+            <div class="product-item" data-category="recommended">
+                <div class="product-img">
+                    <img src="res/image5.png" alt="商品5">
+                </div>
+                <div class="product-title">雨伞</div>
+                <div class="product-price">￥25.00</div>
+            </div>
+            <div class="product-item" data-category="recommended">
+                <div class="product-img">
+                    <img src="res/image6.png" alt="商品6">
+                </div>
+                <div class="product-title">手电筒</div>
+                <div class="product-price">￥15.00</div>
+            </div>
 
-  <!-- 主体内容区域 -->
-  <div class="main-content">
-    <!-- 商品分类栏 -->
-    <div class="category-bar">
-      <ul>
-        <li><a href="#">推荐商品</a></li>
-        <li><a href="#">果蔬生鲜</a></li>
-        <li><a href="#">日用百货</a></li>
-        <li><a href="#">数码电器</a></li>
-        <!-- 可以添加更多分类 -->
-      </ul>
+
+            <!-- ----------------------------- -->
+
+
+            <div class="product-item" data-category="daily-goods">
+                <div class="product-img"><img src="res/image1.png" alt="商品1"></div>
+                <div class="product-title">保温杯</div>
+                <div class="product-price">￥35.00</div>
+            </div>
+            <div class="product-item" data-category="fruits-vegetables">
+                <div class="product-img"><img src="res/image2.png" alt="商品2"></div>
+                <div class="product-title">苹果</div>
+                <div class="product-price">￥5.00</div>
+            </div>
+            <div class="product-item" data-category="daily-goods">
+                <div class="product-img">
+                    <img src="res/image3.png" alt="商品3">
+                </div>
+                <div class="product-title">毛巾</div>
+                <div class="product-price">￥10.00</div>
+            </div>
+            <div class="product-item" data-category="daily-goods">
+                <div class="product-img">
+                    <img src="res/image4.png" alt="商品4">
+                </div>
+                <div class="product-title">牙膏</div>
+                <div class="product-price">￥12.00</div>
+            </div>
+            <div class="product-item" data-category="daily-goods">
+                <div class="product-img">
+                    <img src="res/image5.png" alt="商品5">
+                </div>
+                <div class="product-title">雨伞</div>
+                <div class="product-price">￥25.00</div>
+            </div>
+            <div class="product-item" data-category="electronics">
+                <div class="product-img">
+                    <img src="res/image6.png" alt="商品6">
+                </div>
+                <div class="product-title">手电筒</div>
+                <div class="product-price">￥15.00</div>
+            </div>
+
+        </div>
+        <div class="switch-buttons">
+            <button id="prev-category">&lt;</button>
+            <button id="prev-category">&gt;</button>
+        </div>
     </div>
 
-    <!-- 商品展示区域 -->
-    <div class="product-grid">
-      <div class="product-item">
-        <div class="product-img">
-          <img src="res/image1.png" alt="商品1">
-        </div>
-        <div class="product-title">保温杯</div>
-        <div class="product-price">￥35.00</div>
-      </div>
-      <div class="product-item">
-        <div class="product-img">
-          <img src="res/image2.png" alt="商品2">
-        </div>
-        <div class="product-title">苹果</div>
-        <div class="product-price">￥5.00</div>
-      </div>
-      <div class="product-item">
-        <div class="product-img">
-          <img src="res/image3.png" alt="商品3">
-        </div>
-        <div class="product-title">毛巾</div>
-        <div class="product-price">￥10.00</div>
-      </div>
-      <div class="product-item">
-        <div class="product-img">
-          <img src="res/image4.png" alt="商品4">
-        </div>
-        <div class="product-title">牙膏</div>
-        <div class="product-price">￥12.00</div>
-      </div>
-      <div class="product-item">
-        <div class="product-img">
-          <img src="res/image5.png" alt="商品5">
-        </div>
-        <div class="product-title">雨伞</div>
-        <div class="product-price">￥25.00</div>
-      </div>
-      <div class="product-item">
-        <div class=" product-img ">
-          <img src="res/image6.png" alt="商品6">
-        </div>
-        <div class="product-title">手电筒</div>
-        <div class="product-price">￥15.00</div>
-      </div>
-    </div>
+    <footer>
+        &copy; 2024 杂货店版权所有
+    </footer>
 
-  </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const categories = ['recommended', 'fruits-vegetables', 'daily-goods', 'electronics'];
+            let currentIndex = 0;
 
-  <footer>
-    &copy; 2024 杂货店版权所有
-  </footer>
+            // 隐藏不属于当前分类的商品
+            function showCategory(category) {
+                const products = document.querySelectorAll('.product-item');
+                products.forEach(product => {
+                    if (product.getAttribute('data-category') === category) {
+                        product.style.display = 'block';
+                    } else {
+                        product.style.display = 'none';
+                    }
+                });
+            }
+
+            // 初始化显示推荐商品
+            showCategory(categories[currentIndex]);
+
+            // 处理分类栏点击事件
+            document.querySelectorAll('.category-bar a').forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const category = this.getAttribute('data-category');
+                    currentIndex = categories.indexOf(category);
+                    showCategory(category);
+                });
+            });
+
+            // 处理左右切换按钮
+            document.getElementById('prev-category').addEventListener('click', function () {
+                currentIndex = (currentIndex > 0)? currentIndex - 1 : categories.length - 1;
+                showCategory(categories[currentIndex]);
+            });
+
+            document.getElementById('next-category').addEventListener('click', function () {
+                currentIndex = (currentIndex < categories.length - 1)? currentIndex + 1 : 0;
+                showCategory(categories[currentIndex]);
+            });
+        });
+    </script>
+
 </body>
 
 </html>
