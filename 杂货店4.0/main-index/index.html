@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>杂货店</title>
+    <link rel="stylesheet" href="css/nav.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font: 14px/1.5 Helvetica Neue, Helvetica, Arial, Microsoft Yahei, Hiragino Sans GB, Heiti SC, WenQuanYi Micro Hei, sans-serif;
+            color: #333;
+            background-color: #fff;
+            min-width: 1226px;
+        }
+
+        /* 商品展示区域样式 */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            grid-gap: 20px;
+            padding: 20px;
+        }
+
+        .product-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .product-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-img {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .product-img img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+
+        .product-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .product-price {
+            color: #ff6347;
+            font-size: 14px;
+        }
+
+        /* 切换按钮样式 */
+        .switch-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-top: 10px;
+            padding: 0 20px;
+        }
+
+        .switch-buttons button {
+            background-color: #e0e0e0;
+            color: #333;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .switch-buttons button:hover {
+            background-color: #d0d0d0;
+        }
+
+        /* 购物车相关样式 */
+        .add-to-cart {
+            background-color: #ff6347;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-to-cart:hover {
+            background-color: #ff4500;
+        }
+
+        .cart-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+            z-index: 1000;
+        }
+
+        /* 数量控制样式 */
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0;
+            gap: 8px;
+        }
+
+        .quantity-btn {
+            background-color: #e0e0e0;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .quantity-btn:hover {
+            background-color: #d0d0d0;
+        }
+
+        .quantity-input {
+            width: 40px;
+            height: 24px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+
+        .quantity-input::-webkit-inner-spin-button,
+        .quantity-input::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .main-content {
+            padding: 20px;
+        }
+        /* 底部样式 */
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 头部导航栏 -->
+    <header>
+        <!-- 顶层导航栏 -->
+        <div class="nav-top">
+            <div class="container">
+                <div class="nav-links">
+                    <a href="#" class="active">首页</a>
+                    <a href="index-gwc.html">购物车</a>
+                    <a href="index-order.html">我的订单</a>
+                    <a href="../login.html" id="loginLink">登录/注册</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 次级导航栏 -->
+        <div class="nav-sub">
+            <div class="container">
+                <div class="nav-category">
+                    <a href="#" data-category="recommended" class="active">推荐商品</a>
+                    <a href="#" data-category="fruits-vegetables">水果蔬菜</a>
+                    <a href="#" data-category="daily-goods">日用百货</a>
+                    <a href="#" data-category="electronics">电子产品</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主体内容区域 -->
+    <div class="main-content">
+        <!-- 商品展示区域 -->
+        <div class="product-grid" id="product-grid">
+            <!-- 初始展示推荐商品 -->
+            <div class="product-item" data-category="recommended">
+                <div class="product-img"><img src="res/1.avif" onclick="window.location.href='../detail.html'" alt="商品1"></div>
+                <div class="product-title">海贼王手办</div>
+                <div class="product-price">￥512.00</div>
+                <div class="quantity-control">
+                    <button class="quantity-btn decrease">-</button>
+                    <input type="number" class="quantity-input" value="1" min="1" max="99">
+                    <button class="quantity-btn increase">+</button>
+                </div>
+                <button class="add-to-cart" data-id="1" data-name="海贼王手办" data-price="512.00">加入购物车</button>
+            </div>
+            <div class="product-item" data-category="recommended">
+                <div class="product-img"><img src="res/image2.png" onclick="window.location.href='../detail.html'" alt="商品2"></div>
+                <div class="product-title">苹果</div>
+                <div class="product-price">￥5.00</div>
+                <div class="quantity-control">
+                    <button class="quantity-btn decrease">-</button>
+                    <input type="number" class="quantity-input" value="1" min="1" max="99">
+                    <button class="quantity-btn increase">+</button>
+                </div>
+                <button class="add-to-cart" data-id="2" data-name="苹果" data-price="5.00">加入购物车</button>
+            </div>
+            <div class="product-item" data-category="recommended">
+                <div class="product-img">
+                    <img src="res/image3.png" onclick="window.location.href='../detail.html'"  alt="商品3">
+                </div>
+                <div class="product-title">毛巾</div>
+                <div class="product-price">￥10.00</div>
+                <div class="quantity-control">
+                    <button class="quantity-btn decrease">-</button>
+                    <input type="number" class="quantity-input" value="1" min="1" max="99">
+                    <button class="quantity-btn increase">+</button>
+                </div>
+                <button class="add-to-cart" data-id="3" data-name="毛巾" data-price="10.00">加入购物车</button>
+            </div>
+            <div class="product-item" data-category="recommended">
+                <div class="product-img">
+                    <img src="res/image4.png" onclick="window.location.href='../detail.html'" alt="商品4">
+                </div>
+                <div class="product-title">牙膏</div>
+                <div class="product-price">￥12.00</div>
+                <div class="quantity-control">
+                    <button class="quantity-btn decrease">-</button>
+                    <input type="number" class="quantity-input" value="1" min="1" max="99">
+                    <button class="quantity-btn increase">+</button>
+                </div>
+                <button class="add-to-cart" data-id="4" data-name="牙膏" data-price="12.00">加入购物车</button>
+            </div>
+            <div class="product-item" data-category="recommended">
+                <div class="product-img">
+                    <img src="res/image5.png" onclick="window.location.href='../detail.html'" alt="商品5">
+                </div>
+                <div class="product-title">雨伞</div>
+                <div class="product-price">￥25.00</div>
+                <div class="quantity-control">
+                    <button class="quantity-btn decrease">-</button>
+                    <input type="number" class="quantity-input" value="1" min="1" max="99">
+                    <button class="quantity-btn increase">+</button>
+                </div>
+                <button class="add-to-cart" data-id="5" data-name="雨伞" data-price="25.00">加入购物车</button>
+            </div>
+            <div class="product-item" data-category="recommended">
+                <div class="product-img">
+                    <img src="res/image6.png" onclick="window.location.href='../detail.html'" alt="商品6">
+                </div>
+                <div class="product-title">手电筒</div>
+                <div class="product-price">￥15.00</div>
+                <div class="quantity-control">
+                    <button class="quantity-btn decrease">-</button>
+                    <input type="number" class="quantity-input" value="1" min="1" max="99">
+                    <button class="quantity-btn increase">+</button>
+                </div>
+                <button class="add-to-cart" data-id="6" data-name="手电筒" data-price="15.00">加入购物车</button>
+            </div>
+
+
+            <!-- ----------------------------- -->
+
+
+            <div class="product-item" data-category="daily-goods">
+                <div class="product-img"><img src="res/image1.png" onclick="window.location.href='../detail.html'" alt="商品1"></div>
+                <div class="product-title">保温杯</div>
+                <div class="product-price">￥35.00</div>
+                <div class="quantity-control">
+                    <button class="quantity-btn decrease">-</button>
+                    <input type="number" class="quantity-input" value="1" min="1" max="99">
+                    <button class="quantity-btn increase">+</button>
+                </div>
+                <button class="add-to-cart" data-id="7" data-name="保温杯" data-price="35.00">加入购物车</button>
+            </div>
+            <div class="product-item" data-category="fruits-vegetables">
+                <div class="product-img">
+                    <img src="res/image2.png" onclick="window.location.href='../detail.html'" alt="苹果">
+                </div>
+                <div class="product-title">苹果</div>
+                <div class="product-price">￥5.00</div>
+                <div class="quantity-control">
+                    <button class="quantity-btn decrease">-</button>
+                    <input type="number" class="quantity-input" value="1" min="1" max="99">
+                    <button class="quantity-btn increase">+</button>
+                </div>
+                <button class="add-to-cart" data-id="8" data-name="苹果" data-price="5.00">加入购物车</button>
+            </div>
+            <div class="product-item" data-category="daily-goods">
+                <div class="product-img">
+                    <img src="res/image3.png" onclick="window.location.href='../detail.html'" alt="商品3">
+                </div>
+                <div class="product-title">毛巾</div>
+                <div class="product-price">￥10.00</div>
+                <div class="quantity-control">
+                    <button class="quantity-btn decrease">-</button>
+                    <input type="number" class="quantity-input" value="1" min="1" max="99">
+                    <button class="quantity-btn increase">+</button>
+                </div>
+                <button class="add-to-cart" data-id="9" data-name="毛巾" data-price="10.00">加入购物车</button>
+            </div>
+            <div class="product-item" data-category="daily-goods">
+                <div class="product-img">
+                    <img src="res/image4.png" onclick="window.location.href='../detail.html'" alt="商品4">
+                </div>
+                <div class="product-title">牙膏</div>
+                <div class="product-price">￥12.00</div>
+                <div class="quantity-control">
+                    <button class="quantity-btn decrease">-</button>
+                    <input type="number" class="quantity-input" value="1" min="1" max="99">
+                    <button class="quantity-btn increase">+</button>
+                </div>
+                <button class="add-to-cart" data-id="10" data-name="牙膏" data-price="12.00">加入购物车</button>
+            </div>
+            <div class="product-item" data-category="daily-goods">
+                <div class="product-img">
+                    <img src="res/image5.png" onclick="window.location.href='../detail.html'" alt="商品5">
+                </div>
+                <div class="product-title">雨伞</div>
+                <div class="product-price">￥25.00</div>
+                <div class="quantity-control">
+                    <button class="quantity-btn decrease">-</button>
+                    <input type="number" class="quantity-input" value="1" min="1" max="99">
+                    <button class="quantity-btn increase">+</button>
+                </div>
+                <button class="add-to-cart" data-id="11" data-name="雨伞" data-price="25.00">加入购物车</button>
+            </div>
+            <div class="product-item" data-category="electronics">
+                <div class="product-img">
+                    <img src="res/image6.png" onclick="window.location.href='../detail.html'" alt="商品6">
+                </div>
+                <div class="product-title">手电筒</div>
+                <div class="product-price">￥15.00</div>
+                <div class="quantity-control">
+                    <button class="quantity-btn decrease">-</button>
+                    <input type="number" class="quantity-input" value="1" min="1" max="99">
+                    <button class="quantity-btn increase">+</button>
+                </div>
+                <button class="add-to-cart" data-id="12" data-name="手电筒" data-price="15.00">加入购物车</button>
+            </div>
+
+        </div>
+        <div class="switch-buttons">
+            <button id="prev-category">&lt;</button>
+            <button id="next-category">&gt;</button>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2024 杂货店版权所有
+    </footer>
+
+    <div class="cart-notification" id="cartNotification">已添加到购物车</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 分类相关代码
+            const categories = ['recommended', 'fruits-vegetables', 'daily-goods', 'electronics'];
+            let currentIndex = 0;
+
+            // 更新分类显示和导航栏状态
+            function updateCategory(category) {
+                // 更新商品显示
+                const products = document.querySelectorAll('.product-item');
+                products.forEach(product => {
+                    if (product.getAttribute('data-category') === category) {
+                        product.style.display = 'block';
+                    } else {
+                        product.style.display = 'none';
+                    }
+                });
+
+                // 更新导航栏激活状态
+                document.querySelectorAll('.nav-category a').forEach(link => {
+                    if (link.getAttribute('data-category') === category) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+            }
+
+            // 处理次级导航栏点击事件
+            document.querySelectorAll('.nav-category a').forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const category = this.getAttribute('data-category');
+                    currentIndex = categories.indexOf(category);
+                    updateCategory(category);
+                });
+            });
+
+            // 处理左右切换按钮
+            document.getElementById('prev-category').addEventListener('click', function () {
+                currentIndex = (currentIndex > 0) ? currentIndex - 1 : categories.length - 1;
+                updateCategory(categories[currentIndex]);
+            });
+
+            document.getElementById('next-category').addEventListener('click', function () {
+                currentIndex = (currentIndex < categories.length - 1) ? currentIndex + 1 : 0;
+                updateCategory(categories[currentIndex]);
+            });
+
+            // 初始化显示推荐商品
+            updateCategory(categories[currentIndex]);
+
+            // 购物数据接口
+            const cartAPI = {
+                items: [],
+                
+                getCurrentUser() {
+                    return localStorage.getItem('currentUser');
+                },
+                
+                addItem(item) {
+                    const username = this.getCurrentUser();
+                    if (!username) {
+                        window.location.href = '../login.html';
+                        return;
+                    }
+                    
+                    this.loadFromLocalStorage();
+                    const existingItem = this.items.find(i => i.id === item.id);
+                    if (existingItem) {
+                        existingItem.quantity += item.quantity;
+                    } else {
+                        this.items.push(item);
+                    }
+                    this.saveToLocalStorage();
+                    return this.items;
+                },
+                
+                removeItem(itemId) {
+                    this.loadFromLocalStorage();
+                    this.items = this.items.filter(item => item.id !== itemId);
+                    this.saveToLocalStorage();
+                    return this.items;
+                },
+                
+                getItems() {
+                    this.loadFromLocalStorage();
+                    return this.items;
+                },
+                
+                saveToLocalStorage() {
+                    const username = this.getCurrentUser();
+                    if (username) {
+                        localStorage.setItem(`cart_${username}`, JSON.stringify(this.items));
+                    }
+                },
+                
+                loadFromLocalStorage() {
+                    const username = this.getCurrentUser();
+                    if (username) {
+                        const stored = localStorage.getItem(`cart_${username}`);
+                        this.items = stored ? JSON.parse(stored) : [];
+                    } else {
+                        this.items = [];
+                    }
+                }
+            };
+
+            // 初始化购物车
+            cartAPI.loadFromLocalStorage();
+
+            // 显示通知函数
+            function showNotification() {
+                const notification = document.getElementById('cartNotification');
+                notification.style.display = 'block';
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 2000);
+            }
+
+            // 为所有加入购物车按钮添加点击事件
+            document.querySelectorAll('.add-to-cart').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const itemId = this.dataset.id;
+                    const itemName = this.dataset.name;
+                    const itemPrice = parseFloat(this.dataset.price);
+                    const quantityInput = this.parentElement.querySelector('.quantity-input');
+                    const quantity = parseInt(quantityInput.value);
+                    
+                    cartAPI.addItem({
+                        id: itemId,
+                        name: itemName,
+                        price: itemPrice,
+                        quantity: quantity
+                    });
+                    
+                    // 添加完成后重置数量为1
+                    quantityInput.value = 1;
+                    showNotification();
+                });
+            });
+
+            // 数量控制功能
+            document.querySelectorAll('.quantity-control').forEach(control => {
+                const decreaseBtn = control.querySelector('.decrease');
+                const increaseBtn = control.querySelector('.increase');
+                const input = control.querySelector('.quantity-input');
+
+                decreaseBtn.addEventListener('click', () => {
+                    let value = parseInt(input.value);
+                    if (value > 1) {
+                        input.value = value - 1;
+                    }
+                });
+
+                increaseBtn.addEventListener('click', () => {
+                    let value = parseInt(input.value);
+                    if (value < 99) {
+                        input.value = value + 1;
+                    }
+                });
+
+                input.addEventListener('change', () => {
+                    let value = parseInt(input.value);
+                    if (isNaN(value) || value < 1) {
+                        input.value = 1;
+                    } else if (value > 99) {
+                        input.value = 99;
+                    }
+                });
+            });
+
+            // 替换原有的本地存储代码
+            async function loadProducts() {
+                try {
+                    const response = await fetch('http://localhost:3000/api/products');
+                    const products = await response.json();
+                    displayProducts(products);
+                } catch (error) {
+                    console.error('Error loading products:', error);
+                }
+            }
+
+            async function addToCart(productId, quantity) {
+                try {
+                    const response = await fetch('http://localhost:3000/api/cart', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            user_id: getCurrentUserId(), // 需要实现获取当前用户ID的函数
+                            product_id: productId,
+                            quantity: quantity
+                        })
+                    });
+                    const result = await response.json();
+                    showNotification('已添加到购物车');
+                } catch (error) {
+                    console.error('Error adding to cart:', error);
+                    showNotification('添加失败，请重试');
+                }
+            }
+
+            // 更新登录状态显示
+            function updateLoginStatus() {
+                const loginLink = document.getElementById('loginLink');
+                const currentUser = localStorage.getItem('currentUser');
+                if (currentUser) {
+                    // 保存原始文本
+                    const originalText = `欢迎，${currentUser}`;
+                    loginLink.textContent = originalText;
+                    
+                    // 添加鼠标悬停事件
+                    loginLink.addEventListener('mouseenter', function() {
+                        this.textContent = '退出登录';
+                    });
+                    
+                    // 添加鼠标离开事件
+                    loginLink.addEventListener('mouseleave', function() {
+                        this.textContent = originalText;
+                    });
+                    
+                    // 点击事件
+                    loginLink.onclick = function(e) {
+                        e.preventDefault();
+                        if (confirm('确定要退出登录吗？')) {
+                            localStorage.removeItem('currentUser');
+                            window.location.href = '../login.html';
+                        }
+                    };
+                }
+            }
+
+            // 在页面加载时调用
+            document.addEventListener('DOMContentLoaded', function() {
+                updateLoginStatus();
+                // ... 其他现有的代码 ...
+            });
+
+            function checkAuth() {
+                const currentUser = localStorage.getItem('currentUser');
+                if (!currentUser) {
+                    // 未登录，跳转到登录页
+                    window.location.href = '../login.html';
+                }
+                return JSON.parse(currentUser);
+            }
+
+            // 获取当前用户信息
+            function getCurrentUser() {
+                return JSON.parse(localStorage.getItem('currentUser'));
+            }
+
+            // 页面加载时检查登录状态
+            document.addEventListener('DOMContentLoaded', function() {
+                const currentUser = localStorage.getItem('currentUser');
+                if (!currentUser) {
+                    window.location.href = '../login.html';
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>

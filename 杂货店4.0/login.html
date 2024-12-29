@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>杂货店登录</title>
+    <!-- 引入css -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* 添加消息提示框样式 */
+        .message-box {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .message-box.success {
+            background: linear-gradient(45deg, #4CAF50, #8BC34A);
+        }
+
+        .message-box.error {
+            background: linear-gradient(45deg, #f44336, #ff5252);
+        }
+
+        .message-box.show {
+            opacity: 1;
+        }
+
+        /* 错误提示样式 */
+        .error-message {
+            color: #ff4444;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <div class="login-wrapper">
+            <div class="left-img">
+                <div class="glass">
+                    <div class="tips">
+                        <div class="title">
+                            解忧杂货
+                        </div>
+                        <h1 class="h1">有爱，有梦想</h1>
+                        <span class="span1">去创造</span>
+                        <span class="span1">我们邀请您加入我们杂货店</span>
+                    </div>
+                </div>
+            </div>
+            <div class="right-login-form">
+                <div class="form-wrapper">
+                    <h1 class="h2">登录界面</h1>
+                </div>
+                <form id="loginForm" onsubmit="return handleLogin(event)">
+                    <div class="input-items">
+                        <span class="input-tips">账号</span>
+                        <input type="text" id="loginUsername" class="inputs" placeholder="请输入您的账号" required>
+                        <div class="error-message" id="loginUsernameError"></div>
+                    </div>
+                    <div class="input-items">
+                        <span class="input-tips">密码</span>
+                        <input type="password" id="loginPassword" class="inputs" placeholder="请输入您的密码" required>
+                        <div class="error-message" id="loginPasswordError"></div>
+                    </div>
+                    <button type="submit" class="btn">登录</button>
+                </form>
+                <div class="siginup-tips">
+                    <span>没有账号?</span>
+                    <a href="animation.html" style="cursor: pointer; color: #2196F3; text-decoration: none;">注册</a>
+                </div>
+                <div class="other-login">
+                    <div class="divider">
+                        <span class="line"></span>
+                        <span class="divider-text">or</span>
+                        <span class="line"></span>
+                    </div>
+                    <div class="other-login-wrapper">
+                        <div class="other-login-item">
+                            <img src="./images/QQ.png" alt="" class="image">
+                        </div>
+                        <div class="other-login-item">
+                            <img src="./images/wechat.png" alt="" class="image">
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+
+    <!-- 添加注册表单（�����认隐藏） -->
+    <div id="registerFormContainer" style="display: none;">
+        <form id="registerForm" onsubmit="return handleRegister(event)">
+            <div class="input-items">
+                <span class="input-tips">用户名</span>
+                <input type="text" id="registerUsername" class="inputs" required>
+                <div class="error-message" id="registerUsernameError"></div>
+            </div>
+            <div class="input-items">
+                <span class="input-tips">密码</span>
+                <input type="password" id="registerPassword" class="inputs" required>
+                <div class="error-message" id="registerPasswordError"></div>
+            </div>
+            <div class="input-items">
+                <span class="input-tips">确认密码</span>
+                <input type="password" id="confirmPassword" class="inputs" required>
+                <div class="error-message" id="confirmPasswordError"></div>
+            </div>
+            <button type="submit" class="btn">注册</button>
+            <div class="siginup-tips">
+                <span onclick="showLoginForm()" style="cursor: pointer; color: #2196F3;">返回登录</span>
+            </div>
+        </form>
+    </div>
+
+    <div class="message-box" id="messageBox"></div>
+
+    <script>
+        function showMessage(message, type = 'success') {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.textContent = message;
+            messageBox.className = `message-box ${type}`;
+            messageBox.classList.add('show');
+
+            setTimeout(() => {
+                messageBox.classList.remove('show');
+            }, 3000);
+        }
+
+        function showLoginForm() {
+            document.querySelector('.login-wrapper').style.display = 'flex';
+            document.getElementById('registerFormContainer').style.display = 'none';
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+
+            if (users[username] && users[username].password === password) {
+                localStorage.setItem('currentUser', username);
+                showMessage('登录成功！正在跳转...', 'success');
+                setTimeout(() => {
+                    window.location.href = 'main-index/index.html';
+                }, 1500);
+            } else {
+                showMessage('用户名或密码错误', 'error');
+                document.getElementById('loginPasswordError').textContent = '用户名或密码错误';
+                document.getElementById('loginPasswordError').style.display = 'block';
+            }
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            const username = document.getElementById('registerUsername').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                showMessage('两次输入的密码不匹配', 'error');
+                document.getElementById('confirmPasswordError').textContent = '两次输入的密码不匹配';
+                document.getElementById('confirmPasswordError').style.display = 'block';
+                return;
+            }
+
+            if (password.length < 6) {
+                showMessage('密码长度至少为6个字符', 'error');
+                document.getElementById('registerPasswordError').textContent = '密码长度至少为6个字符';
+                document.getElementById('registerPasswordError').style.display = 'block';
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+
+            if (users[username]) {
+                showMessage('用户名已存在', 'error');
+                document.getElementById('registerUsernameError').textContent = '用户名已存在';
+                document.getElementById('registerUsernameError').style.display = 'block';
+                return;
+            }
+
+            users[username] = password;
+            localStorage.setItem('users', JSON.stringify(users));
+
+            showMessage('注册成功！请登录', 'success');
+            document.getElementById('registerForm').reset();
+            setTimeout(() => {
+                showLoginForm();
+            }, 1500);
+        }
+    </script>
+</body>
+
+</html>
