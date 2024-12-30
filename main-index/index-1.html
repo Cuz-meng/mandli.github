@@ -6,6 +6,7 @@
     <meta charset="UTF-8" />
     <title>杂货店</title>
     <link rel="stylesheet" href="css/nav.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -118,10 +119,17 @@
             right: 20px;
             background-color: #4CAF50;
             color: white;
-            padding: 15px;
+            padding: 15px 25px;
             border-radius: 5px;
             display: none;
             z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transform: translateY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .cart-notification.show {
+            transform: translateY(10px);
         }
 
         /* 数量控制样式 */
@@ -380,6 +388,44 @@
     <div class="cart-notification" id="cartNotification">已添加到购物车</div>
 
     <script>
+        $(document).ready(function() {
+            // 分类切换功能
+            $('.nav-category a').click(function(e) {
+                e.preventDefault();
+                const category = $(this).data('category');
+                
+                // 更新导航栏激活状态
+                $('.nav-category a').removeClass('active');
+                $(this).addClass('active');
+                
+                // 更新商品显示
+                $('.product-item').hide();
+                $(`.product-item[data-category="${category}"]`).fadeIn(300);
+            });
+
+            // 左右切换按钮
+            $('#prev-category').click(function() {
+                const categories = ['recommended', 'fruits-vegetables', 'daily-goods', 'electronics'];
+                let currentCategory = $('.nav-category a.active').data('category');
+                let currentIndex = categories.indexOf(currentCategory);
+                let newIndex = (currentIndex > 0) ? currentIndex - 1 : categories.length - 1;
+                
+                $(`.nav-category a[data-category="${categories[newIndex]}"]`).trigger('click');
+            });
+
+            $('#next-category').click(function() {
+                const categories = ['recommended', 'fruits-vegetables', 'daily-goods', 'electronics'];
+                let currentCategory = $('.nav-category a.active').data('category');
+                let currentIndex = categories.indexOf(currentCategory);
+                let newIndex = (currentIndex < categories.length - 1) ? currentIndex + 1 : 0;
+                
+                $(`.nav-category a[data-category="${categories[newIndex]}"]`).trigger('click');
+            });
+
+            // 初始化显示推荐商品
+            $('.nav-category a[data-category="recommended"]').trigger('click');
+        });
+
         document.addEventListener('DOMContentLoaded', function () {
             // 分类相关代码
             const categories = ['recommended', 'fruits-vegetables', 'daily-goods', 'electronics'];
@@ -490,35 +536,33 @@
             // 初始化购物车
             cartAPI.loadFromLocalStorage();
 
-            // 显示通知函数
+            // 修改通知提示相关代码
             function showNotification() {
-                const notification = document.getElementById('cartNotification');
-                notification.style.display = 'block';
-                setTimeout(() => {
-                    notification.style.display = 'none';
-                }, 2000);
+                $('#cartNotification')
+                    .fadeIn(300)          // 淡入显示，300ms
+                    .css('display', 'flex')  // 使用flex布局
+                    .delay(1500)         // 显示1.5秒
+                    .fadeOut(300);       // 淡出隐藏，300ms
             }
 
-            // 为所有加入购物车按钮添加点击事件
-            document.querySelectorAll('.add-to-cart').forEach(button => {
-                button.addEventListener('click', function(e) {
-                    const itemId = this.dataset.id;
-                    const itemName = this.dataset.name;
-                    const itemPrice = parseFloat(this.dataset.price);
-                    const quantityInput = this.parentElement.querySelector('.quantity-input');
-                    const quantity = parseInt(quantityInput.value);
-                    
-                    cartAPI.addItem({
-                        id: itemId,
-                        name: itemName,
-                        price: itemPrice,
-                        quantity: quantity
-                    });
-                    
-                    // 添加完成后重置数量为1
-                    quantityInput.value = 1;
-                    showNotification();
-                });
+            // 修改加入购物车按钮的事件处理
+            $('.add-to-cart').click(function() {
+                const $button = $(this);
+                const $item = $button.closest('.product-item');
+                const itemData = {
+                    id: $button.data('id'),
+                    name: $button.data('name'),
+                    price: parseFloat($button.data('price')),
+                    quantity: parseInt($item.find('.quantity-input').val())
+                };
+                
+                cartAPI.addItem(itemData);
+                
+                // 重置数量为1
+                $item.find('.quantity-input').val(1);
+                
+                // 显示通知
+                showNotification();
             });
 
             // 数量控制功能
